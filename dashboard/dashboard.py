@@ -150,7 +150,6 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("**Dataset:** Capital Bikeshare System  \n**Periode:** 2011 – 2012")
 
 # ─────────────────────────────────────────────
 # Filter Data
@@ -394,4 +393,3 @@ st.info(
 )
 
 st.markdown('---')
-st.caption('© 2024 Bike Sharing Dashboard | Dataset: Capital Bikeshare System (2011-2012)')
