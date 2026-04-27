@@ -139,10 +139,6 @@ min_date = main_data['dteday'].min()
 max_date = main_data['dteday'].max()
 
 with st.sidebar:
-    st.image(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Bike_icon_4.svg/512px-Bike_icon_4.svg.png",
-        width=80,
-    )
     st.title("🚲 Bike Sharing Dashboard")
     st.markdown("---")
 
@@ -169,7 +165,7 @@ filtered_data = main_data[
 # Header & Metric Cards
 # ─────────────────────────────────────────────
 
-st.title('🚲 Bike Sharing Dashboard')
+st.title('Dashboard Projek Analisa Data')
 st.markdown('Analisis penyewaan sepeda berdasarkan kondisi cuaca, tipe pengguna, dan pola waktu.')
 st.markdown('---')
 
@@ -195,9 +191,9 @@ st.markdown('---')
 # Pertanyaan Bisnis 1 – Pengaruh Cuaca
 # ─────────────────────────────────────────────
 
-st.header('☁️ Pertanyaan 1: Apakah Kondisi Cuaca Mempengaruhi Penyewaan Sepeda?')
+st.header('Pertanyaan 1: Apakah Kondisi Cuaca Mempengaruhi Penyewaan Sepeda?')
 
-# Plot 1a: Bar chart rata-rata per kondisi cuaca
+# Plot : Bar chart rata-rata per kondisi cuaca
 weather_avg = create_weather_avg_df(filtered_data)
 order_weather = ['Cerah', 'Berkabut', 'Hujan Ringan', 'Cuaca Buruk']
 weather_avg['weathersit_label'] = pd.Categorical(
@@ -219,11 +215,11 @@ plt.tight_layout()
 st.pyplot(fig1)
 
 st.info(
-    "💡 **Insight:** Cuaca cerah menghasilkan rata-rata penyewaan tertinggi (~205/jam), "
+    "**Insight:** Cuaca cerah menghasilkan rata-rata penyewaan tertinggi (205/jam), "
     "diikuti berkabut, hujan ringan, dan cuaca buruk. Semakin buruk cuaca, semakin sedikit penyewa."
 )
 
-# Plot 1b: Line chart per jam berdasarkan kondisi cuaca
+# Plot : Line chart per jam berdasarkan kondisi cuaca
 hourly_weather = create_hourly_weather_df(filtered_data)
 
 fig2, ax2 = plt.subplots(figsize=(12, 5))
@@ -241,7 +237,7 @@ ax2.spines[['top', 'right']].set_visible(False)
 plt.tight_layout()
 st.pyplot(fig2)
 
-# Plot 1c: Scatter plot variabel cuaca vs penyewaan
+# Plot : Scatter plot variabel cuaca vs penyewaan
 scatter_df = create_scatter_df(filtered_data)
 
 fig3, axes3 = plt.subplots(1, 3, figsize=(15, 4))
@@ -268,8 +264,8 @@ plt.tight_layout()
 st.pyplot(fig3)
 
 st.info(
-    "💡 **Insight:** Suhu berkorelasi positif dengan penyewaan – semakin hangat, semakin banyak penyewa. "
-    "Kelembaban dan kecepatan angin menunjukkan korelasi negatif lemah."
+    "**Insight:** Suhu berkorelasi positif dengan penyewaan, semakin hangat semakin banyak penyewa. "
+    "Kecepatan angin menunjukkan korelasi negatif lemah."
 )
 
 st.markdown('---')
@@ -278,9 +274,9 @@ st.markdown('---')
 # Pertanyaan Bisnis 2 – Hari Kerja vs Libur
 # ─────────────────────────────────────────────
 
-st.header('📅 Pertanyaan 2: Perbedaan Tren Hari Kerja vs Libur dan Registered vs Casual?')
+st.header('Pertanyaan 2: Perbedaan Tren Hari Kerja vs Libur dan Registered vs Casual?')
 
-# Plot 2a: Bar chart rata-rata casual & registered
+# Plot : Bar chart rata-rata casual & registered
 workday_user = create_workingday_user_df(filtered_data)
 
 fig4, ax4 = plt.subplots(figsize=(7, 4))
@@ -300,7 +296,7 @@ for bar in list(bars_cas) + list(bars_reg):
 plt.tight_layout()
 st.pyplot(fig4)
 
-# Plot 2b: Line chart penyewaan per jam hari kerja vs libur
+# Plot : Line chart penyewaan per jam hari kerja vs libur
 hourly_wd = create_hourly_workingday_df(filtered_data)
 
 fig5, ax5 = plt.subplots(figsize=(12, 5))
@@ -316,11 +312,11 @@ plt.tight_layout()
 st.pyplot(fig5)
 
 st.info(
-    "💡 **Insight:** Hari kerja menunjukkan 2 puncak jelas di jam 8 pagi & 5 sore (jam komuter). "
+    "**Insight:** Hari kerja menunjukkan 2 puncak jelas di jam 8 pagi & 5 sore (jam komuter). "
     "Hari libur memiliki pola landai memanjang dari pagi hingga sore."
 )
 
-# Plot 2c: Perbandingan casual vs registered per jam
+# Plot : Perbandingan casual vs registered per jam
 work_df, holi_df = create_hourly_user_type_df(filtered_data)
 
 fig6, axes6 = plt.subplots(1, 2, figsize=(15, 5))
@@ -347,7 +343,7 @@ plt.tight_layout()
 st.pyplot(fig6)
 
 st.info(
-    "💡 **Insight:** Hari kerja didominasi pengguna registered dengan pola rush-hour. "
+    "**Insight:** Hari kerja didominasi pengguna registered dengan pola rush-hour. "
     "Hari libur memperlihatkan peningkatan signifikan pengguna casual dan polanya lebih mirip registered."
 )
 
@@ -357,7 +353,7 @@ st.markdown('---')
 # Analisis Lanjutan – Segmentasi Waktu
 # ─────────────────────────────────────────────
 
-st.header('🕐 Analisis Lanjutan: Segmentasi Waktu Penyewaan')
+st.header('Analisis Lanjutan: Segmentasi Waktu Penyewaan')
 
 avg_cnt, hour_avg = create_time_segment_df(filtered_data)
 
@@ -393,8 +389,8 @@ plt.tight_layout()
 st.pyplot(fig7)
 
 st.info(
-    "💡 **Insight:** Pagi (Rush) dan Sore (Rush) memiliki rata-rata tertinggi, dikontribusi oleh pengguna "
-    "komuter di hari kerja. Siang hari juga tinggi – umumnya dari pengguna rekreasi di hari libur."
+    "**Insight:** Pagi (Rush) dan Sore (Rush) memiliki rata-rata tertinggi, mayoritas merupakan pengguna "
+    "komuter di hari kerja. Siang hari juga tinggi, umumnya dari pengguna rekreasi di hari libur."
 )
 
 st.markdown('---')
