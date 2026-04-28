@@ -6,7 +6,6 @@ import seaborn as sns
 import streamlit as st
 import os
 
-sns.set(style='dark')
 
 # ─────────────────────────────────────────────
 # Custom CSS – fix date picker width
@@ -188,10 +187,10 @@ with col4:
 st.markdown('---')
 
 # ─────────────────────────────────────────────
-# Pertanyaan Bisnis 1 – Pengaruh Cuaca
+# Pertanyaan Bisnis 1
 # ─────────────────────────────────────────────
 
-st.header('Pertanyaan 1: Apakah Kondisi Cuaca Mempengaruhi Penyewaan Sepeda?')
+st.header('Pertanyaan 1: Bagaimana Kondisi Cuaca Berpengaruh terhadap Rata-rata Jumlah Penyewaan periode 2011-2012?')
 
 # Plot : Bar chart rata-rata per kondisi cuaca
 weather_avg = create_weather_avg_df(filtered_data)
@@ -270,10 +269,10 @@ st.info(
 st.markdown('---')
 
 # ─────────────────────────────────────────────
-# Pertanyaan Bisnis 2 – Hari Kerja vs Libur
+# Pertanyaan Bisnis 2
 # ─────────────────────────────────────────────
 
-st.header('Pertanyaan 2: Perbedaan Tren Hari Kerja vs Libur dan Registered vs Casual?')
+st.header('Pertanyaan 2: Bagaimana Pola Penyewaan Sepeda Harian Antara Hari Kerja dengan Hari Libur dan Pengguna Registered dengan Casual Selama Periode 2011-2012??')
 
 # Plot : Bar chart rata-rata casual & registered
 workday_user = create_workingday_user_df(filtered_data)
