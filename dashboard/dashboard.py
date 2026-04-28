@@ -102,9 +102,10 @@ def create_time_segment_df(df):
     df = df.copy()
     df['time_of_day'] = df['hr'].apply(group_time_of_day)
     order = ['Dini Hari', 'Pagi (Rush)', 'Siang', 'Sore (Rush)', 'Malam']
-    avg_cnt  = df.groupby('time_of_day')['cnt'].mean().reindex(order)
-    hour_avg = df.groupby('hr')['cnt'].mean()
-    return avg_cnt, hour_avg
+    avg_cnt   = df.groupby('time_of_day')['cnt'].mean().reindex(order)
+    total_cnt = df.groupby('time_of_day')['cnt'].sum().reindex(order)
+    hour_avg  = df.groupby('hr')['cnt'].mean()
+    return avg_cnt, total_cnt, hour_avg
 
 
 # ─────────────────────────────────────────────
@@ -201,8 +202,7 @@ weather_avg['weathersit_label'] = pd.Categorical(
 weather_avg = weather_avg.sort_values('weathersit_label')
 
 fig1, ax1 = plt.subplots(figsize=(8, 4))
-palette = ['#2ecc71', '#f39c12', '#3498db', '#e74c3c']
-bars = ax1.bar(weather_avg['weathersit_label'], weather_avg['cnt'], color=palette, edgecolor='white', linewidth=1.2)
+bars = ax1.bar(weather_avg['weathersit_label'], weather_avg['cnt'], color='#2878B5', edgecolor='white', linewidth=1.2)
 ax1.set_title('Rata-rata Penyewaan per Kondisi Cuaca (per Jam)', fontsize=13, fontweight='bold', pad=12)
 ax1.set_xlabel('Kondisi Cuaca')
 ax1.set_ylabel('Rata-rata Penyewaan')
@@ -240,19 +240,19 @@ st.pyplot(fig2)
 scatter_df = create_scatter_df(filtered_data)
 
 fig3, axes3 = plt.subplots(1, 3, figsize=(15, 4))
-axes3[0].scatter(scatter_df['temp_actual'], scatter_df['cnt'], alpha=0.5, color='#e74c3c')
+axes3[0].scatter(scatter_df['temp_actual'], scatter_df['cnt'], alpha=0.5, color='#2878B5')
 axes3[0].set_title('Suhu vs Penyewaan')
 axes3[0].set_xlabel('Suhu (°C)')
 axes3[0].set_ylabel('Jumlah Penyewaan')
 axes3[0].spines[['top', 'right']].set_visible(False)
 
-axes3[1].scatter(scatter_df['hum_actual'], scatter_df['cnt'], alpha=0.5, color='#3498db')
+axes3[1].scatter(scatter_df['hum_actual'], scatter_df['cnt'], alpha=0.5, color='#2878B5')
 axes3[1].set_title('Kelembaban vs Penyewaan')
 axes3[1].set_xlabel('Kelembaban (%)')
 axes3[1].set_ylabel('Jumlah Penyewaan')
 axes3[1].spines[['top', 'right']].set_visible(False)
 
-axes3[2].scatter(scatter_df['windspeed_actual'], scatter_df['cnt'], alpha=0.5, color='#9b59b6')
+axes3[2].scatter(scatter_df['windspeed_actual'], scatter_df['cnt'], alpha=0.5, color='#2878B5')
 axes3[2].set_title('Kecepatan Angin vs Penyewaan')
 axes3[2].set_xlabel('Kecepatan Angin (km/h)')
 axes3[2].set_ylabel('Jumlah Penyewaan')
@@ -354,22 +354,29 @@ st.markdown('---')
 
 st.header('Analisis Lanjutan: Segmentasi Waktu Penyewaan')
 
-avg_cnt, hour_avg = create_time_segment_df(filtered_data)
+avg_cnt, total_cnt, hour_avg = create_time_segment_df(filtered_data)
 
 order      = ['Dini Hari', 'Pagi (Rush)', 'Siang', 'Sore (Rush)', 'Malam']
 seg_colors = ['#6C5CE7', '#FDCB6E', '#00B894', '#E17055', '#74B9FF']
 
 fig7, axes7 = plt.subplots(1, 2, figsize=(14, 6))
 
-bars7 = axes7[0].bar(range(len(order)), avg_cnt.values, color=seg_colors, edgecolor='white', linewidth=1.5)
-axes7[0].set_xticks(range(len(order)))
-axes7[0].set_xticklabels(['Dini\nHari', 'Pagi\n(Rush)', 'Siang', 'Sore\n(Rush)', 'Malam'], fontsize=10)
-axes7[0].set_title('Rata-rata Penyewaan per Segmen Waktu', fontweight='bold', pad=15)
-axes7[0].set_ylabel('Rata-rata Penyewaan')
-axes7[0].spines[['top', 'right']].set_visible(False)
-for bar, val in zip(bars7, avg_cnt.values):
-    axes7[0].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
-                  f'{val:.0f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+wedges, texts, autotexts = axes7[0].pie(
+    total_cnt.values,
+    labels=None,
+    colors=seg_colors,
+    autopct='%1.1f%%',
+    startangle=90,
+    wedgeprops=dict(edgecolor='white', linewidth=1.5),
+    pctdistance=0.75
+)
+for autotext in autotexts:
+    autotext.set_fontsize(10)
+    autotext.set_fontweight('bold')
+pie_patches = [mpatches.Patch(color=c, label=l) for c, l in zip(seg_colors, order)]
+axes7[0].legend(handles=pie_patches, loc='lower center',
+                bbox_to_anchor=(0.5, -0.12), ncol=3, fontsize=9)
+axes7[0].set_title('Persentase Penyewaan per Segmen Waktu', fontweight='bold', pad=15)
 
 hour_colors_map = {h: seg_colors[order.index(group_time_of_day(h))] for h in range(24)}
 bar_colors = [hour_colors_map[h] for h in range(24)]
@@ -388,8 +395,8 @@ plt.tight_layout()
 st.pyplot(fig7)
 
 st.info(
-    "**Insight:** Pagi (Rush) dan Sore (Rush) memiliki rata-rata tertinggi, mayoritas merupakan pengguna "
-    "komuter di hari kerja. Siang hari juga tinggi, umumnya dari pengguna rekreasi di hari libur."
+    "**Insight:** Sore merupakan waktu dengan jumlah penyewa sepeda terbanyak. Keumdian disusul oleh siang dan malam "
+    "Jika dilihat dari frekuensi per jamnya, waktu paling sibuk terjadi pada pagi dan sore hari, terbukti dengan tiga frekuensi tertinggi terjadi pada jam 8, 17, dan 18."
 )
 
 st.markdown('---')
